@@ -12,7 +12,8 @@
 #import "ContentView.h"
 
 @interface MasterViewController () {
-    NSMutableArray *_objects;
+    NSMutableArray *videos;
+    NSMutableData *data;
 }
 @end
 
@@ -26,15 +27,38 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
     
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.backgroundColor = [UIColor lightGrayColor];
-    }
+    
+    NSURL *url = [[NSURL alloc] initWithString:@"http://gdata.youtube.com/feeds/api/videos?author=google&alt=json"];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    [NSURLConnection connectionWithRequest:request delegate:self];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    data = [[NSMutableData alloc] initWithData:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)_data
+{
+	[data appendData:_data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUnicodeStringEncoding];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options: NSJSONReadingAllowFragments error:nil];
+    
+    NSDictionary *feed = [[NSDictionary alloc] initWithDictionary:[dict valueForKey:@"feed"]];
+    videos = [NSMutableArray arrayWithArray:[feed valueForKey:@"entry"]];
+    [self.tableView reloadData];
+
+}
+
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -42,15 +66,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender
-{
-    if (!_objects) {
-        _objects = [[NSMutableArray alloc] init];
-    }
-    [_objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
 
 #pragma mark - Table View
 
@@ -61,7 +76,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _objects.count;
+    return videos.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -79,12 +94,18 @@
 {
     ContentView *contentView = [[ContentView alloc] init ];
     contentView.frame = CGRectMake(10, 10, cell.frame.size.width - 20, cell.frame.size.height - 20);
-    NSDate *object = _objects[indexPath.row];
-    contentView.textLabel.text = [object description];
+    NSDictionary *video = videos[indexPath.row];
+    NSDictionary *title = [video valueForKey:@"title"];
+    contentView.textLabel.text = [title valueForKey:@"$t"];
     
-    NSURL *url = [[NSURL alloc] initWithString:@"http://img.youtube.com/vi/wARg1Hcw7Ck/2.jpg"];
-    NSData *data = [[NSData alloc] initWithContentsOfURL:url];
-    contentView.imageView.image = [[UIImage alloc] initWithData:data];
+    NSDictionary *media = [video valueForKey:@"media$group"];
+    NSArray *thumbnails = [media valueForKey:@"media$thumbnail"];
+    
+    NSDictionary *thumbnail = thumbnails[0];
+    
+    NSURL *url = [[NSURL alloc] initWithString:[thumbnail valueForKey:@"url"]];
+    NSData *imageData = [[NSData alloc] initWithContentsOfURL:url];
+    contentView.imageView.image = [[UIImage alloc] initWithData:imageData];
     
     [cell.contentView addSubview:contentView];
 }
@@ -95,6 +116,7 @@
     return YES;
 }
 
+/*
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -104,7 +126,8 @@
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
-
+*/
+ 
 /*
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
@@ -125,7 +148,7 @@
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = _objects[indexPath.row];
+        NSDate *object = videos[indexPath.row];
         [[segue destinationViewController] setDetailItem:object];
     }
 }

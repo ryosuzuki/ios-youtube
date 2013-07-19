@@ -16,7 +16,7 @@
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         self.textLabel = [[UILabel alloc] init];
-        self.textLabel.frame = CGRectMake(130, 0, 100, 50);
+        self.textLabel.frame = CGRectMake(130, 0, 150, 50);
         [self addSubview:self.textLabel];
         
         self.imageView = [[UIImageView alloc] init];
