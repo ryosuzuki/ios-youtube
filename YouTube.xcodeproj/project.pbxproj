@@ -24,6 +24,7 @@
 		0D0F84BC1798C98A00C0FA62 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D0F84941798C98A00C0FA62 /* Foundation.framework */; };
 		0D0F84C41798C98A00C0FA62 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0D0F84C21798C98A00C0FA62 /* InfoPlist.strings */; };
 		0D0F84C71798C98A00C0FA62 /* YouTubeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D0F84C61798C98A00C0FA62 /* YouTubeTests.m */; };
+		0DB886B41798F8E10036A484 /* ContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB886B31798F8E10036A484 /* ContentView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,8 @@
 		0D0F84C31798C98A00C0FA62 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0D0F84C51798C98A00C0FA62 /* YouTubeTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YouTubeTests.h; sourceTree = "<group>"; };
 		0D0F84C61798C98A00C0FA62 /* YouTubeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YouTubeTests.m; sourceTree = "<group>"; };
+		0DB886B21798F8E10036A484 /* ContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentView.h; sourceTree = "<group>"; };
+		0DB886B31798F8E10036A484 /* ContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +128,8 @@
 				0D0F84AA1798C98A00C0FA62 /* MainStoryboard.storyboard */,
 				0D0F84AD1798C98A00C0FA62 /* MasterViewController.h */,
 				0D0F84AE1798C98A00C0FA62 /* MasterViewController.m */,
+				0DB886B21798F8E10036A484 /* ContentView.h */,
+				0DB886B31798F8E10036A484 /* ContentView.m */,
 				0D0F84B01798C98A00C0FA62 /* DetailViewController.h */,
 				0D0F84B11798C98A00C0FA62 /* DetailViewController.m */,
 				0D0F84991798C98A00C0FA62 /* Supporting Files */,
@@ -279,6 +284,7 @@
 				0D0F84A31798C98A00C0FA62 /* AppDelegate.m in Sources */,
 				0D0F84AF1798C98A00C0FA62 /* MasterViewController.m in Sources */,
 				0D0F84B21798C98A00C0FA62 /* DetailViewController.m in Sources */,
+				0DB886B41798F8E10036A484 /* ContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,6 +465,7 @@
 				0D0F84CC1798C98A00C0FA62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0D0F84CD1798C98A00C0FA62 /* Build configuration list for PBXNativeTarget "YouTubeTests" */ = {
 			isa = XCConfigurationList;
@@ -467,6 +474,7 @@
 				0D0F84CF1798C98A00C0FA62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

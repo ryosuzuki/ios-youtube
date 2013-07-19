@@ -9,6 +9,7 @@
 #import "MasterViewController.h"
 
 #import "DetailViewController.h"
+#import "ContentView.h"
 
 @interface MasterViewController () {
     NSMutableArray *_objects;
@@ -30,7 +31,10 @@
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
-}
+    
+    self.tableView.separatorColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor lightGrayColor];
+    }
 
 - (void)didReceiveMemoryWarning
 {
@@ -63,10 +67,26 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    NSDate *object = _objects[indexPath.row];
-    cell.textLabel.text = [object description];
     return cell;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    return 110;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ContentView *contentView = [[ContentView alloc] init ];
+    contentView.frame = CGRectMake(10, 10, cell.frame.size.width - 20, cell.frame.size.height - 20);
+    NSDate *object = _objects[indexPath.row];
+    contentView.textLabel.text = [object description];
+    
+    NSURL *url = [[NSURL alloc] initWithString:@"http://img.youtube.com/vi/wARg1Hcw7Ck/2.jpg"];
+    NSData *data = [[NSData alloc] initWithContentsOfURL:url];
+    contentView.imageView.image = [[UIImage alloc] initWithData:data];
+    
+    [cell.contentView addSubview:contentView];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
