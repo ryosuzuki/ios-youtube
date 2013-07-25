@@ -9,37 +9,27 @@
 #import "DetailViewController.h"
 
 @interface DetailViewController ()
-- (void)configureView;
 @end
 
 @implementation DetailViewController
 
-#pragma mark - Managing the detail item
-
-- (void)setDetailItem:(id)newDetailItem
-{
-    if (_detailItem != newDetailItem) {
-        _detailItem = newDetailItem;
-        
-        // Update the view.
-        [self configureView];
-    }
-}
-
-- (void)configureView
-{
-    // Update the user interface for the detail item.
-
-    if (self.detailItem) {
-        self.detailDescriptionLabel.text = [self.detailItem description];
-    }
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    [self configureView];
+    
+    NSLog(@"%@", self.url);
+
+    NSString *videoURL = self.url;
+    NSString *videoHTML = [NSString stringWithFormat:@"\
+                           <html><body>\
+                           <embed src=\"%@\" type=\"application/x-shockwave-flash\" wmode=\"transparent\" width=\"310\" height=\"180\">\
+                           </embed>\
+                           </body></html>", videoURL];
+    
+    UIWebView* webView = [[UIWebView alloc] initWithFrame: CGRectMake(0, 0, 310, 180)];
+    [webView loadHTMLString: videoHTML baseURL: nil];
+    [self.view addSubview: webView];
+
 }
 
 - (void)didReceiveMemoryWarning
