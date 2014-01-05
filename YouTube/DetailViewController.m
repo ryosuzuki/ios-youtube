@@ -17,9 +17,10 @@
 {
     [super viewDidLoad];
 
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
-
+    }
+    
     NSString *videoURL = @"http://www.youtube.com/v/Lv-sY_z8MNs";
     NSString *videoHTML = [NSString stringWithFormat:@"\
                            <html><body>\

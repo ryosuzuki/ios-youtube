@@ -11,6 +11,8 @@
 #import "DetailViewController.h"
 
 @interface MasterViewController () {
+    NSMutableArray *videos;
+    NSMutableData *data;
 }
 @end
 
@@ -33,6 +35,29 @@
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    data = [[NSMutableData alloc] initWithData:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)_data
+{
+	[data appendData:_data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUnicodeStringEncoding];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options: NSJSONReadingAllowFragments error:nil];
+    
+    NSDictionary *feed = [[NSDictionary alloc] initWithDictionary:[dict valueForKey:@"feed"]];
+    videos = [NSMutableArray arrayWithArray:[feed valueForKey:@"entry"]];
+    [self.tableView reloadData];
+    
+}
+
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -47,7 +72,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return videos.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -57,6 +82,7 @@
     return cell;
 }
 
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     return 110;
@@ -64,8 +90,13 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.textLabel.text = @"Google Zeitgeist | Here's to 2013";
-    NSURL *url = [[NSURL alloc] initWithString:@"http://img.youtube.com/vi/Lv-sY_z8MNs/2.jpg"];
+    NSDictionary *video = videos[indexPath.row];
+    NSString *title = [video valueForKeyPath:@"title.$t"];
+    NSArray *thumbnails = [video valueForKeyPath:@"media$group.media$thumbnail"];
+    NSString *thumbnailImage = [thumbnails[0] valueForKeyPath:@"url"];
+    
+    cell.textLabel.text = title;
+    NSURL *url = [[NSURL alloc] initWithString:thumbnailImage];
     NSData *imageData = [[NSData alloc] initWithContentsOfURL:url];
     cell.imageView.image = [UIImage imageWithData:imageData];
 }
