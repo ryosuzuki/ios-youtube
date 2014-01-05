@@ -90,6 +90,15 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+    
+    NSDictionary *video = videos[indexPath.row];
+    NSDictionary *content = [video valueForKeyPath:@"media$group.media$content"][0];
+    NSString *url = [content valueForKeyPath:@"url"];
+    
+    DetailViewController *detailViewController = [segue destinationViewController];
+    detailViewController.url = url;
+
 }
 
 @end

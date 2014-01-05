@@ -17,11 +17,13 @@
 {
     [super viewDidLoad];
 
+    NSLog(@"%@", self.url);
+    
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
-    NSString *videoURL = @"http://www.youtube.com/v/Lv-sY_z8MNs";
+    NSString *videoURL = self.url;
     NSString *videoHTML = [NSString stringWithFormat:@"\
                            <html><body>\
                            <embed src=\"%@\" type=\"application/x-shockwave-flash\" wmode=\"transparent\" width=\"310\" height=\"180\">\
