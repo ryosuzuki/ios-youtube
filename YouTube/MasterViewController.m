@@ -9,11 +9,8 @@
 #import "MasterViewController.h"
 
 #import "DetailViewController.h"
-#import "ContentView.h"
 
 @interface MasterViewController () {
-    NSMutableArray *videos;
-    NSMutableData *data;
 }
 @end
 
@@ -36,28 +33,6 @@
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    data = [[NSMutableData alloc] initWithData:0];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)_data
-{
-	[data appendData:_data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSData *jsonData = [jsonString dataUsingEncoding:NSUnicodeStringEncoding];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options: NSJSONReadingAllowFragments error:nil];
-    
-    NSDictionary *feed = [[NSDictionary alloc] initWithDictionary:[dict valueForKey:@"feed"]];
-    videos = [NSMutableArray arrayWithArray:[feed valueForKey:@"entry"]];
-    [self.tableView reloadData];
-
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -72,7 +47,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return videos.count;
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -89,20 +64,10 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ContentView *contentView = [[ContentView alloc] init ];
-    contentView.frame = CGRectMake(10, 10, cell.frame.size.width - 20, cell.frame.size.height - 20);
-    NSDictionary *video = videos[indexPath.row];
-    NSString *title = [video valueForKeyPath:@"title.$t"];
-    contentView.textLabel.text = title;
-    
-    NSArray *thumbnails = [video valueForKeyPath:@"media$group.media$thumbnail"];
-    NSString *thumbnailImage = [thumbnails[0] valueForKeyPath:@"url"];
-    NSURL *url = [[NSURL alloc] initWithString:thumbnailImage];
-    
+    cell.textLabel.text = @"Google Zeitgeist | Here's to 2013";
+    NSURL *url = [[NSURL alloc] initWithString:@"http://img.youtube.com/vi/Lv-sY_z8MNs/2.jpg"];
     NSData *imageData = [[NSData alloc] initWithContentsOfURL:url];
-    contentView.imageView.image = [[UIImage alloc] initWithData:imageData];
-    
-    [cell.contentView addSubview:contentView];
+    cell.imageView.image = [UIImage imageWithData:imageData];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -112,16 +77,6 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-
-    NSDictionary *video = videos[indexPath.row];
-    NSDictionary *media = [video valueForKey:@"media$group"];
-    NSArray *contents = [media valueForKey:@"media$content"];
-    NSDictionary *content = contents[0];
-    NSString *url = [content valueForKey:@"url"];
-
-    DetailViewController *detailViewController = [segue destinationViewController];
-    detailViewController.url = url;
 }
 
 @end
