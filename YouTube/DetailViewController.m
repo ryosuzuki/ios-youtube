@@ -19,6 +19,9 @@
     
     NSLog(@"%@", self.url);
 
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     NSString *videoURL = self.url;
     NSString *videoHTML = [NSString stringWithFormat:@"\
                            <html><body>\
@@ -26,7 +29,7 @@
                            </embed>\
                            </body></html>", videoURL];
     
-    UIWebView* webView = [[UIWebView alloc] initWithFrame: CGRectMake(0, 0, 310, 180)];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame: self.view.frame];
     [webView loadHTMLString: videoHTML baseURL: nil];
     [self.view addSubview: webView];
 

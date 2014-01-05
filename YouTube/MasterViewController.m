@@ -28,6 +28,9 @@
 {
     [super viewDidLoad];
     
+    self.tableView.separatorColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
+    
     NSURL *url = [[NSURL alloc] initWithString:@"http://gdata.youtube.com/feeds/api/videos?author=google&alt=json"];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -76,25 +79,30 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
-    NSDictionary *video = videos[indexPath.row];
-    NSDictionary *title = [video valueForKey:@"title"];
-    cell.textLabel.text = [title valueForKey:@"$t"];
-    
-    NSDictionary *media = [video valueForKey:@"media$group"];
-    NSArray *thumbnails = [media valueForKey:@"media$thumbnail"];
-    
-    NSDictionary *thumbnail = thumbnails[0];
-    
-    NSURL *url = [[NSURL alloc] initWithString:[thumbnail valueForKey:@"url"]];
-    NSData *imageData = [[NSData alloc] initWithContentsOfURL:url];
-    cell.imageView.image = [UIImage imageWithData:imageData];
-    
     return cell;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return 100;
+    return 110;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ContentView *contentView = [[ContentView alloc] init ];
+    contentView.frame = CGRectMake(10, 10, cell.frame.size.width - 20, cell.frame.size.height - 20);
+    NSDictionary *video = videos[indexPath.row];
+    NSString *title = [video valueForKeyPath:@"title.$t"];
+    contentView.textLabel.text = title;
+    
+    NSArray *thumbnails = [video valueForKeyPath:@"media$group.media$thumbnail"];
+    NSString *thumbnailImage = [thumbnails[0] valueForKeyPath:@"url"];
+    NSURL *url = [[NSURL alloc] initWithString:thumbnailImage];
+    
+    NSData *imageData = [[NSData alloc] initWithContentsOfURL:url];
+    contentView.imageView.image = [[UIImage alloc] initWithData:imageData];
+    
+    [cell.contentView addSubview:contentView];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
